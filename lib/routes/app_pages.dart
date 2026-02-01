@@ -1,21 +1,19 @@
 import 'package:chat_app/routes/app_routes.dart';
+import 'package:chat_app/views/auth/login_view.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import '../views/auth/register_view.dart';
 import '../views/splash_view.dart';
-
-
-
-
 
 
 class AppPages{
   static const initial = AppRoutes.splash;
   static final routes = [
     GetPage(name: AppRoutes.splash, page: () =>const SplashView()),
-    // GetPage(name: AppRoutes.login, page: () =>const LoginView()),
-    // GetPage(name: AppRoutes.register, page: () => const RegisterView()),
+    GetPage(name: AppRoutes.login, page: () =>const LoginView()),
+    GetPage(name: AppRoutes.register, page: () => const RegisterView()),
     // GetPage(name: AppRoutes.profile,
     //     page: () => const ProfileView(),
     //     binding: BindingsBuilder((){
