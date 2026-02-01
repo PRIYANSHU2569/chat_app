@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import '../views/auth/forget_password_view.dart';
 import '../views/auth/register_view.dart';
 import '../views/splash_view.dart';
 
@@ -14,18 +15,16 @@ class AppPages{
     GetPage(name: AppRoutes.splash, page: () =>const SplashView()),
     GetPage(name: AppRoutes.login, page: () =>const LoginView()),
     GetPage(name: AppRoutes.register, page: () => const RegisterView()),
-    // GetPage(name: AppRoutes.profile,
+    // GetPage(
+    // name: AppRoutes.profile,
     //     page: () => const ProfileView(),
     //     binding: BindingsBuilder((){
     //       Get.put(ProfileController());
     //     })
     // ),
-    // GetPage(name: AppRoutes.forgotPassword,
-    //     page: () => const ForgotPasswordView(),
-    //     binding: BindingsBuilder((){
-    //       Get.put(ForgotPasswordController());
-    //     })
-    // ),
+    GetPage(name: AppRoutes.forgotPassword,
+        page: () => const ForgetPasswordView(),
+    ),
     //
     // GetPage(name: AppRoutes.home,
     //   page: () =>const HomeView(),
