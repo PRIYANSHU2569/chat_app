@@ -1,4 +1,6 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class UserModel{
   final String id;
   final String email;
@@ -28,6 +30,18 @@ class UserModel{
       'createdAt':createdAt,
     };
   }
+  // Map<String, dynamic> toMap() {
+  //   return {
+  //     'id': id,
+  //     'email': email,
+  //     'displayName': displayName,
+  //     'photoURL': photoURL,
+  //     'isOnline': isOnline,
+  //     'lastSeen': Timestamp.fromDate(lastSeen),
+  //     'createdAt': Timestamp.fromDate(createdAt),
+  //   };
+  // }
+
   static UserModel fromMap(Map<String,dynamic> map){
     return UserModel(
       id: map['id'] ?? '',
@@ -35,10 +49,11 @@ class UserModel{
       displayName: map['displayName'] ?? '',
       photoURL: map['photoURL'] ?? '',
       isOnline: map['isOnline']  ?? false,
-      lastSeen: DateTime.fromMillisecondsSinceEpoch(map['lastSeen'] ?? 0),
-      createdAt:DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0),
+      lastSeen: map['lastSeen'] != null ? (map['lastSeen'] as Timestamp).toDate(): DateTime.now(),
+      createdAt:map['createdAt'] != null ? (map['createdAt'] as Timestamp).toDate(): DateTime.now(),
     );
   }
+
   UserModel copyWith({
     String? id,
     String? email,

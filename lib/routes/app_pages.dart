@@ -1,5 +1,7 @@
+import 'package:chat_app/controllers/profile_controller.dart';
 import 'package:chat_app/routes/app_routes.dart';
 import 'package:chat_app/views/auth/login_view.dart';
+import 'package:chat_app/views/profile_view.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_instance/get_instance.dart';
@@ -15,13 +17,13 @@ class AppPages{
     GetPage(name: AppRoutes.splash, page: () =>const SplashView()),
     GetPage(name: AppRoutes.login, page: () =>const LoginView()),
     GetPage(name: AppRoutes.register, page: () => const RegisterView()),
-    // GetPage(
-    // name: AppRoutes.profile,
-    //     page: () => const ProfileView(),
-    //     binding: BindingsBuilder((){
-    //       Get.put(ProfileController());
-    //     })
-    // ),
+    GetPage(
+    name: AppRoutes.profile,
+        page: () => const ProfileView(),
+        binding: BindingsBuilder((){
+          Get.put(ProfileController());
+        })
+    ),
     GetPage(name: AppRoutes.forgotPassword,
         page: () => const ForgetPasswordView(),
     ),
