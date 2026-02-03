@@ -17,11 +17,8 @@ class ProfileController extends GetxController {
   final Rx<UserModel?> _currentUser = Rx<UserModel?>(null);
 
   bool get isLoading => _isLoading.value;
-
   bool get isEditing => _isEditing.value;
-
   String get error => _error.value;
-
   UserModel? get currentUser => _currentUser.value;
 
   @override
@@ -32,8 +29,8 @@ class ProfileController extends GetxController {
 
   @override
   void onClose() {
-    displayNameController.dispose();
-    emailController.dispose();
+    // displayNameController.dispose();
+    // emailController.dispose();
     super.onClose();
   }
 
@@ -69,7 +66,7 @@ class ProfileController extends GetxController {
       final user = _currentUser.value;
       if (user == null) return;
 
-      final updatedUser = user!.copyWith(
+      final updatedUser = user.copyWith(
         displayName: displayNameController.text,
         email: emailController.text,
       );
@@ -106,7 +103,7 @@ class ProfileController extends GetxController {
             ),
             TextButton(
               onPressed: () => Get.back(result: true),
-              style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+              style: TextButton.styleFrom(backgroundColor: Colors.redAccent),
               child: Text('Delete', style: TextStyle(color: Colors.white)),
             ),
           ],
@@ -126,9 +123,9 @@ class ProfileController extends GetxController {
   String getJoinedData(){
     final user = _currentUser.value;
     if(user == null) return '';
-    final date = user!.createdAt;
+    final date = user.createdAt;
     final  months = [
-      'Jan','Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ' Jan',' Feb', ' Mar', ' Apr', ' May', ' Jun', ' Jul', ' Aug', ' Sep', ' Oct', ' Nov', ' Dec'
     ];
     return 'Joined${months[date.month - 1]} ${date.day}, ${date.year}';
 

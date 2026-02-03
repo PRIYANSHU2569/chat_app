@@ -29,34 +29,34 @@ class AuthController extends GetxController {
   void onInit() {
     super.onInit();
     _user.bindStream(_authService.authStateChanges);
-    ever(_user, _handleAuthStateChange);
+    // ever(_user, _handleAuthStateChange);
   }
 
-  void _handleAuthStateChange(User? user) {
-    if (user == null) {
-      if (Get.currentRoute != AppRoutes.login) {
-        Get.offAllNamed(AppRoutes.login);
-      }
-    } else {
-      if (Get.currentRoute != AppRoutes.profile) {
-        Get.offAllNamed(AppRoutes.profile);
-      }
-    }
-    if (!_isinitialized.value) {
-      _isinitialized.value = true;
-    }
-  }
+  // void _handleAuthStateChange(User? user) {
+  //   if (user == null) {
+  //     if (Get.currentRoute != AppRoutes.login) {
+  //       Get.offAllNamed(AppRoutes.login);
+  //     }
+  //   } else {
+  //     if (Get.currentRoute != AppRoutes.profile) {//profile
+  //       Get.offAllNamed(AppRoutes.profile); //profile
+  //     }
+  //   }
+  //   if (!_isinitialized.value) {
+  //     _isinitialized.value = true;
+  //   }
+  // }
 
-  void checkInitialAuthState() {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      _user.value = currentUser;
-      Get.offAllNamed(AppRoutes.main);
-    } else {
-      Get.offAllNamed(AppRoutes.login);
-    }
-    _isinitialized.value = true;
-  }
+  // void checkInitialAuthState() {
+  //   final currentUser = FirebaseAuth.instance.currentUser;
+  //   if (currentUser != null) {
+  //     _user.value = currentUser;
+  //     Get.offAllNamed(AppRoutes.main);
+  //   } else {
+  //     Get.offAllNamed(AppRoutes.login);
+  //   }
+  //   _isinitialized.value = true;
+  // }
 
   Future<void> signInWithEmailAndPassword(String email, String password)async{
     try {
@@ -69,7 +69,8 @@ class AuthController extends GetxController {
       );
       if (userModel != null) {
         _userModel.value = userModel;
-        Get.offAllNamed(AppRoutes.main);
+        Get.offAllNamed(AppRoutes.profile);
+        //because we don't  have main page
       }
     } catch (e) {
       _error.value = e.toString();

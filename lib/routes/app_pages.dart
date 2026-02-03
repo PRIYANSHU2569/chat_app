@@ -17,6 +17,8 @@ class AppPages{
     GetPage(name: AppRoutes.splash, page: () =>const SplashView()),
     GetPage(name: AppRoutes.login, page: () =>const LoginView()),
     GetPage(name: AppRoutes.register, page: () => const RegisterView()),
+
+
     GetPage(
     name: AppRoutes.profile,
         page: () => const ProfileView(),
@@ -24,6 +26,7 @@ class AppPages{
           Get.put(ProfileController());
         })
     ),
+
     GetPage(name: AppRoutes.forgotPassword,
         page: () => const ForgetPasswordView(),
     ),

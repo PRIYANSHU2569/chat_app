@@ -34,8 +34,8 @@ class FirestoreService{
         await _firestore.collection('users').doc(userId).update({
           'isOnline': isOnline,
           'lastSeen': DateTime
-              .now()
-              .millisecondsSinceEpoch,
+              .now(),
+
         });
       }
 
