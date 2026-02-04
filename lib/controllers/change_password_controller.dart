@@ -47,7 +47,7 @@ class ChangePasswordController extends GetxController{
   }
 
   Future<void> changePassword()async{
-    if (formKey.currentState!.validate()) return;
+    if (!formKey.currentState!.validate()) return;
     try {
       _isLoading.value = true;
       _error.value = '';
@@ -55,14 +55,13 @@ class ChangePasswordController extends GetxController{
       if (user == null){
         throw Exception('No User Logged In');
       }
+      // baad mai
       // final credential = EmailAuthProvider.credential(
       //   email: user.email!,
       //   password: currentPasswordController.text,
       // );
       // await user.reauthenticateWithCredential(credential);
-      await user.updatePassword(newPasswordController.text);
-      //
-      // await _authController.signOut();
+      await user.updatePassword(newPasswordController.text.trim());
 
       Get.snackbar('Success', 'Password Changed Successfully',
         backgroundColor: Colors.green.withOpacity(0.1),
@@ -73,7 +72,7 @@ class ChangePasswordController extends GetxController{
       currentPasswordController.clear();
       newPasswordController.clear();
       confirmPasswordController.clear();
-      // Get.back();
+
 
       await _authController.signOut();
 
@@ -126,6 +125,9 @@ class ChangePasswordController extends GetxController{
     }
     if (value!.length < 6) {
       return 'Password must be at least 6 characters';
+    }
+    if(value == currentPasswordController.text){
+      return 'New password cannot be the same as the current password';
     }
     return null;
 

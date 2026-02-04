@@ -10,7 +10,7 @@ class ChangePasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(ChangePasswordController());
     return Scaffold(
-      appBar: AppBar(title: Text('Change Password')),
+      appBar: AppBar(title: Text('Change Password'),),   
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(24),

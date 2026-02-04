@@ -31,6 +31,11 @@ class AppPages{
     GetPage(name: AppRoutes.forgotPassword,
         page: () => const ForgetPasswordView(),
     ),
+    GetPage(name:
+    AppRoutes.changePassword,
+      page: () =>const ChangePasswordView(),
+    ),
+
     //
     // GetPage(name: AppRoutes.home,
     //   page: () =>const HomeView(),
@@ -48,10 +53,7 @@ class AppPages{
     //
     // ),
     //
-    GetPage(name:
-    AppRoutes.changePassword,
-        page: () =>const ChangePasswordView(),
-    ),
+
     //
     // GetPage(name: AppRoutes.chat,
     //   page: () => const ChatView(),
