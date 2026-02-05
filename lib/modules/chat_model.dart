@@ -9,7 +9,8 @@ class ChatModel {
   final Map<String, DateTime?> deletedAt;
   final Map<String, DateTime?> lastSeenBy;
   final DateTime createdAt;
-  final DateTime updateAt;
+  final DateTime updatedAt;
+
 
   ChatModel({
     required this.id,
@@ -22,7 +23,9 @@ class ChatModel {
     this.deletedAt = const {},
     this.lastSeenBy = const {},
     required this.createdAt,
-    required this.updateAt,
+    required this.updatedAt,
+
+    // required DateTime updatedAt,
   });
   Map<String, dynamic> toMap() {
     return {
@@ -40,7 +43,8 @@ class ChatModel {
         (key, value) => MapEntry(key, value?.millisecondsSinceEpoch),
       ),
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'updateAt': updateAt.millisecondsSinceEpoch,
+      'updateAt': updatedAt.millisecondsSinceEpoch,
+
     };
   }
 
@@ -82,7 +86,8 @@ class ChatModel {
       deletedAt: deletedAtMap,
       lastSeenBy: lastSeenMap,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
-      updateAt: DateTime.fromMillisecondsSinceEpoch(map['updateAt']),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updateAt']),
+
     );
   }
 
@@ -110,7 +115,7 @@ class ChatModel {
       deletedAt: deletedAt ?? this.deletedAt,
       lastSeenBy: lastSeenBy ?? this.lastSeenBy,
       createdAt: createdAt ?? this.createdAt,
-      updateAt: updateAt ?? this.updateAt,
+      updatedAt: updateAt ?? this.updatedAt,
     );
   }
 
