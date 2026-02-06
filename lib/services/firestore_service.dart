@@ -4,10 +4,8 @@ import 'package:chat_app/modules/friendship_model.dart';
 import 'package:chat_app/modules/message_model.dart';
 import 'package:chat_app/modules/notification_model.dart';
 import 'package:chat_app/modules/user_model.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:chat_app/services/firestore_service.dart';
+
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:chat_app/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 class AuthController extends GetxController {
   final AuthService _authService = AuthService();
   final Rx<User?> _user = Rx<User?>(null);
@@ -58,7 +57,7 @@ class AuthController extends GetxController {
   //   _isinitialized.value = true;
   // }
 
-  Future<void> signInWithEmailAndPassword(String email, String password)async{
+  Future<void> signInWithEmailAndPassword(String email, String password) async {
     try {
       _isLoading.value = true;
       _error.value = '';
@@ -69,8 +68,8 @@ class AuthController extends GetxController {
       );
       if (userModel != null) {
         _userModel.value = userModel;
-        Get.offAllNamed(AppRoutes.profile);
-        //because we don't  have main page
+        Get.offAllNamed(AppRoutes.main);
+
       }
     } catch (e) {
       _error.value = e.toString();
@@ -80,7 +79,12 @@ class AuthController extends GetxController {
       _isLoading.value = false;
     }
   }
-  Future<void> registerWithEmailAndPassword(String email, String password, String displayName)async{
+
+  Future<void> registerWithEmailAndPassword(
+    String email,
+    String password,
+    String displayName,
+  ) async {
     try {
       _isLoading.value = true;
       _error.value = '';
@@ -102,7 +106,8 @@ class AuthController extends GetxController {
       _isLoading.value = false;
     }
   }
-  Future<void> signOut()async{
+
+  Future<void> signOut() async {
     try {
       _isLoading.value = true;
       await _authService.signOut();
@@ -111,12 +116,12 @@ class AuthController extends GetxController {
     } catch (e) {
       _error.value = e.toString();
       Get.snackbar('Error', 'Failed to Sign Out');
-    }
-    finally {
+    } finally {
       _isLoading.value = false;
     }
   }
-  Future<void> deleteAccount()async{
+
+  Future<void> deleteAccount() async {
     try {
       _isLoading.value = true;
       await _authService.deleteAccount();
@@ -125,13 +130,12 @@ class AuthController extends GetxController {
     } catch (e) {
       _error.value = e.toString();
       Get.snackbar('Error', 'Failed to Delete Account');
-    }
-    finally {
+    } finally {
       _isLoading.value = false;
     }
   }
-  void clearError(){
-    _error.value = '';
 
+  void clearError() {
+    _error.value = '';
   }
 }
