@@ -316,10 +316,10 @@ class UsersListController extends GetxController {
     return _userRelationships[userId] ?? UserRelationshipStatus.none;
   }
 
-  String getRelationshipStatusText(UserRelationshipStatus status) {
+  String getRelationshipButtonText(UserRelationshipStatus status) {
     switch (status) {
       case UserRelationshipStatus.none:
-        return 'Friends';
+        return 'Add';
       case UserRelationshipStatus.friendRequestSent:
         return 'Request Sent';
       case UserRelationshipStatus.friendRequestReceived:
@@ -328,8 +328,6 @@ class UsersListController extends GetxController {
         return 'Message';
       case UserRelationshipStatus.blocked:
         return 'Blocked';
-      default:
-        return 'Add Friend';
     }
   }
 

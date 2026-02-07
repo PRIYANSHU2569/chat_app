@@ -1,4 +1,5 @@
 import 'package:chat_app/theme/app_theme.dart';
+import 'package:chat_app/views/widgets/user_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/controllers/user_list_controller.dart';
 import 'package:get/get.dart';
@@ -8,8 +9,32 @@ class FindPeopleView extends GetView<UsersListController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Find People"), leading: SizedBox()),
-      body: Column(children: [_buildSearchBar()]),
+      body: Column(
+        children: [
+          _buildSearchBar(),
+          Expanded(
+            child: Obx(() {
+              if (controller.filteredUsers.isEmpty) {
+                return _buildEmptyState();
+              }
+              return ListView.separated(
+                padding: EdgeInsets.all(16),
+                itemCount: controller.filteredUsers.length,
+                separatorBuilder: (context, index) => SizedBox(height: 8),
 
+                itemBuilder: (context, index) {
+                  final user = controller.filteredUsers[index];
+                  return UserListItem(
+                    user: user,
+                    onTap: () => controller.handleRelationshipAction(user),
+                    controller: controller,
+                  );
+                },
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 
