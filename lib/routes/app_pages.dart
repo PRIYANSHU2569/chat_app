@@ -1,7 +1,11 @@
+import 'package:chat_app/controllers/friends_controller.dart';
 import 'package:chat_app/controllers/main_controller.dart';
 import 'package:chat_app/controllers/profile_controller.dart';
+import 'package:chat_app/controllers/user_list_controller.dart';
 import 'package:chat_app/routes/app_routes.dart';
 import 'package:chat_app/views/auth/login_view.dart';
+import 'package:chat_app/views/find_people_view.dart';
+import 'package:chat_app/views/friends_view.dart';
 import 'package:chat_app/views/main_view.dart';
 import 'package:chat_app/views/profile/change_password_view.dart';
 import 'package:chat_app/views/profile_view.dart';
@@ -62,12 +66,18 @@ class AppPages {
     //
     // ),
     //
-    // GetPage(name: AppRoutes.friends,
-    //   page: () => const FriendsView(),
-    //   binding: BindingsBuilder((){
-    //     Get.put(FriendsController());
-    //   })
-    //   ),
+    GetPage(name: AppRoutes.usersList,
+      page: () => FindPeopleView(),
+      binding: BindingsBuilder((){
+        Get.put(UsersListController());
+      }),
+    ),
+    GetPage(name: AppRoutes.friends,
+      page: () =>  FriendsView(),
+      binding: BindingsBuilder((){
+        Get.put(FriendsController());
+      })
+      ),
     //
     // GetPage(
     //     name: AppRoutes.friendRequests,

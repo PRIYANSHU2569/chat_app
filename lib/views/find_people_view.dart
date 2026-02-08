@@ -96,8 +96,8 @@ class FindPeopleView extends GetView<UsersListController> {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor,
-                borderRadius: BorderRadius.circular(30),
+                color: AppTheme.primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(50),
               ),
               child: Icon(
                 Icons.people_outline,
@@ -120,7 +120,7 @@ class FindPeopleView extends GetView<UsersListController> {
               controller.searchQuery.isNotEmpty
                   ? 'Try a different search term'
                   : "All users will show here",
-              style: Theme.of(Get.context!).textTheme.headlineMedium?.copyWith(
+              style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(
                 color: AppTheme.textPrimaryColor,
                 fontWeight: FontWeight.bold,
               ),
