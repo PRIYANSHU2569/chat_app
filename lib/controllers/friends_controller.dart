@@ -26,7 +26,7 @@ class FriendsController extends GetxController {
   bool get isLoading => _isLoading.value;
   String get error => _error.value;
   String get searchQuery => _searchQuery.value;
-  List<UserModel> get filteredFriends => _filteredFriends;
+  List<UserModel> get filteredFriends => _filteredFriends.toList();
 
   @override
   void onInit() {
@@ -80,6 +80,7 @@ class FriendsController extends GetxController {
         }
       }
       _friends.value = friendUsers;
+      _filterFriends();
     } catch (e) {
       _error.value = e.toString();
     } finally {

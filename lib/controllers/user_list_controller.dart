@@ -78,11 +78,11 @@ class UsersListController extends GetxController {
     if (currentUserId != null) {
       //load sent friend request
       _sentRequests.bindStream(
-        _firestoreService.getSentFriendRequestStream(currentUserId),
+        _firestoreService.getSentFriendRequestsStream(currentUserId),
       );
       //load received friend request
       _receivedRequests.bindStream(
-        _firestoreService.getFriendRequestStream(currentUserId),
+        _firestoreService.getFriendRequestsStream(currentUserId),
       );
       //load friend /friendships
       _friendships.bindStream(

@@ -135,10 +135,7 @@ class FirestoreService {
     }
   }
 
-  Future<void> respondToFriendRequest(
-    String requestId,
-    FriendRequestStatus status,
-  ) async {
+  Future<void> respondToFriendRequest(String requestId, FriendRequestStatus status,) async {
     try {
       await _firestore.collection('friend_requests').doc(requestId).update({
         'status': status.name,
@@ -193,7 +190,7 @@ class FirestoreService {
     }
   }
 
-  Stream<List<FriendRequestModel>> getFriendRequestStream(String userId) {
+  Stream<List<FriendRequestModel>> getFriendRequestsStream(String userId) {
     return _firestore
         .collection('friend_requests')
         .where('receiverId', isEqualTo: userId)
@@ -207,7 +204,7 @@ class FirestoreService {
         );
   }
 
-  Stream<List<FriendRequestModel>> getSentFriendRequestStream(String userId) {
+  Stream<List<FriendRequestModel>> getSentFriendRequestsStream(String userId) {
     return _firestore
         .collection('friend_requests')
         .where('senderId', isEqualTo: userId)
@@ -220,10 +217,7 @@ class FirestoreService {
         );
   }
 
-  Future<FriendRequestModel?> getFriendRequest(
-    String senderId,
-    String receiverId,
-  ) async {
+  Future<FriendRequestModel?> getFriendRequest(String senderId, String receiverId,) async {
     try {
       QuerySnapshot query = await _firestore
           .collection('friend_requests')

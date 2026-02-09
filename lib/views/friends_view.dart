@@ -134,7 +134,7 @@ class FriendsView extends GetView<FriendsController> {
             Text(
               controller.searchQuery.isNotEmpty
                   ? 'Try a different search term'
-                  : "Add friends to start chating with them",
+                  :"Add friends to start chatting with them",
               style: Theme.of(Get.context!).textTheme.bodyMedium?.copyWith(
                 color: AppTheme.textSecondaryColor,
                 fontWeight: FontWeight.bold,
