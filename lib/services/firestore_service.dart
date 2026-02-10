@@ -335,10 +335,7 @@ class FirestoreService {
         });
   }
 
-  Future<FriendshipModel?> getFriendships(
-    String user1Id,
-    String user2Id,
-  ) async {
+  Future<FriendshipModel?> getFriendships(String user1Id, String user2Id,) async {
     try {
       List<String> userIds = [user1Id, user2Id];
       userIds.sort();
@@ -492,11 +489,7 @@ class FirestoreService {
     }
   }
 
-  Future<void> updateUnreadCount(
-    String chatId,
-    String userId,
-    int count,
-  ) async {
+  Future<void> updateUnreadCount(String chatId, String userId, int count,) async {
     try {
       await _firestore.collection('chats').doc(chatId).update({
         'unreadCount.$userId': count,
@@ -687,11 +680,7 @@ class FirestoreService {
     }
   }
 
-  Future<void> deleteNotificationByTypeAndUser(
-    String userId,
-    NotificationType type,
-    String relatedUserId,
-  ) async {
+  Future<void> deleteNotificationByTypeAndUser(String userId, NotificationType type, String relatedUserId,) async {
     try {
       QuerySnapshot notifications = await _firestore
           .collection('notifications')
@@ -714,10 +703,7 @@ class FirestoreService {
       print("error deleting notification : $e");
     }
   }
-  Future<void> _removeNotificationForCancelledRequest(
-    String senderId,
-    String receiverId,
-  ) async {
+  Future<void> _removeNotificationForCancelledRequest(String senderId, String receiverId,) async {
     try {
       await deleteNotificationByTypeAndUser(receiverId, NotificationType.friendRequest,      senderId,);
     }

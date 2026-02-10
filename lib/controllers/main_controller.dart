@@ -1,4 +1,5 @@
 import 'package:chat_app/controllers/friends_controller.dart';
+import 'package:chat_app/controllers/home_controller.dart';
 import 'package:chat_app/controllers/profile_controller.dart';
 import 'package:chat_app/controllers/user_list_controller.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +16,9 @@ class MainController extends GetxController {
     super.onInit();
 
     //Init all required controllers
-    // Get.lazyPut(() =>HomeController());
+    Get.lazyPut(() =>HomeController());
     Get.lazyPut(() =>FriendsController());
     Get.lazyPut(() => ProfileController());
-    // Get.lazyPut(() =>SearchController());
     Get.lazyPut(() =>UsersListController());
   }
 
@@ -43,18 +43,16 @@ class MainController extends GetxController {
 
   int getUnreadCount(){
     try{
-      // final HomeController = Get.find<HomeController>();
-      // return homeController.getTotalUnreadCount();
-      return 5;
+      final homeController = Get.find<HomeController>();
+      return homeController.getTotalUnreadCount();
     }catch(e){
       return 0;
     }
   }
   int getNotificationCount(){
     try{
-      // final HomeController = Get.find<HomeController>();
-      // return homeController.getTotalUnreadCount();
-      return 7;
+      final homeController = Get.find<HomeController>();
+      return homeController.getTotalUnreadCount();
     }catch(e){
       return 0;
     }
