@@ -28,7 +28,7 @@ class MainController extends GetxController {
     super.onClose();
   }
 
-  void changeTableIndex(int index) {
+  void changeTabIndex(int index) {
     _currentIndex.value = index;
     pageController.animateToPage(
       index,

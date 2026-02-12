@@ -88,7 +88,7 @@ class HomeController extends GetxController {
     return null;
   }
 
-  String formalLastMessageTime(DateTime? time) {
+  String formatLastMessageTime(DateTime? time) {
     if (time == null) {
       return '';
     }
@@ -274,6 +274,17 @@ class HomeController extends GetxController {
       }
     }
     return suggestions.toSet().toList();
+  }
+  void openChat(ChatModel chat){
+    final otherUser = getOtherUser(chat);
+    if(otherUser != null){
+      Get.toNamed(
+        AppRoutes.chat,
+        arguments: {
+          'chatId': chat.id,
+          'otherUser': otherUser},
+      );
+    }
   }
 
   void openFriends(){
