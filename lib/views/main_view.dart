@@ -24,7 +24,7 @@ class MainView extends GetView<MainController> {
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
           currentIndex: controller.currentIndex,
-          onTap: controller.changeTableIndex,
+          onTap: controller.changeTabIndex,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: AppTheme.primaryColor,
           unselectedItemColor: AppTheme.textSecondaryColor,

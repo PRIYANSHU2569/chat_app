@@ -2,6 +2,7 @@ import 'package:chat_app/controllers/friend_request_controller.dart';
 import 'package:chat_app/controllers/friends_controller.dart';
 import 'package:chat_app/controllers/home_controller.dart';
 import 'package:chat_app/controllers/main_controller.dart';
+import 'package:chat_app/controllers/notification_controller.dart';
 import 'package:chat_app/controllers/profile_controller.dart';
 import 'package:chat_app/controllers/user_list_controller.dart';
 import 'package:chat_app/routes/app_routes.dart';
@@ -11,6 +12,7 @@ import 'package:chat_app/views/friend_request_view.dart';
 import 'package:chat_app/views/friends_view.dart';
 import 'package:chat_app/views/home_view.dart';
 import 'package:chat_app/views/main_view.dart';
+import 'package:chat_app/views/notification_view.dart';
 import 'package:chat_app/views/profile/change_password_view.dart';
 import 'package:chat_app/views/profile_view.dart';
 import 'package:get/get.dart';
@@ -89,12 +91,12 @@ class AppPages {
           Get.put(FriendRequestsController());
         })
     ),
-    // GetPage(
-    //     name: AppRoutes.notifications,
-    //     page: () => const NotificationsView(),
-    //     binding: BindingsBuilder((){
-    //       Get.put(NotificationsController());
-    //     })
-    // ),
+    GetPage(
+        name: AppRoutes.notifications,
+        page: () =>NotificationView(),
+        binding: BindingsBuilder((){
+          Get.put(NotificationController());
+        })
+    ),
   ];
 }

@@ -140,7 +140,7 @@ class HomeView extends GetView<HomeController> {
             hintText: 'Search conversations...',
             hintStyle: TextStyle(color: Colors.grey[500], fontSize: 15),
             prefixIcon: Icon(
-              Icons.source_rounded,
+              Icons.search_rounded,
               color: Colors.grey[500],
               size: 20,
             ),
@@ -614,7 +614,7 @@ class HomeView extends GetView<HomeController> {
         SizedBox(height: 12),
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton.icon(
+          child: OutlinedButton.icon(
             onPressed: () {
               final mainController = Get.find<MainController>();
               mainController.changeTabIndex(1);
