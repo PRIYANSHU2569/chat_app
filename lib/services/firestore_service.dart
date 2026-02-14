@@ -374,14 +374,14 @@ class FirestoreService {
     }
   }
 
-  Future<bool> isUnfriended(String userId, String otherUserId) async {
+  Future<bool> isUnfriended(String userId, String otherUserId) async   {
     try {
       List<String> userIds = [userId, otherUserId];
       userIds.sort();
-      String friendshipId = '${userIds[0]}_${userIds[1]}';
+      String friendShipId = '${userIds[0]}_${userIds[1]}';
       DocumentSnapshot doc = await _firestore
           .collection('friendships')
-          .doc(friendshipId)
+          .doc(friendShipId)
           .get();
       return !doc.exists || (doc.exists && doc.data() == null);
     } catch (e) {
