@@ -74,7 +74,8 @@ class NotificationItem extends StatelessWidget {
                           ),
                       ],
                     ),
-                    SizedBox(height: 4),
+
+                    SizedBox(height: 5),
                     Text(
                       _getNotificationBody(),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
