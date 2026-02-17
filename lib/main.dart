@@ -14,7 +14,6 @@ void main() async {
 
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -25,6 +24,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       themeMode: ThemeMode.light,
       initialRoute: AppPages.initial,
+
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
 
