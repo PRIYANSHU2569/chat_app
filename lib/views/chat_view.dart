@@ -150,8 +150,7 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
                 itemCount: controller.messages.length,
                 itemBuilder: (context, index) {
                   final message = controller.messages[index];
-                  final isMyMessage =
-                      message.senderId == controller.isMyMessage(message);
+                  final isMyMessage = controller.isMyMessage(message);
                   final showTime =
                       index == 0 ||
                       controller.messages[index - 1].timestamp

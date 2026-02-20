@@ -74,7 +74,6 @@ class NotificationItem extends StatelessWidget {
                           ),
                       ],
                     ),
-
                     SizedBox(height: 5),
                     Text(
                       _getNotificationBody(),
@@ -108,7 +107,6 @@ class NotificationItem extends StatelessWidget {
       ),
     );
   }
-
   String _getNotificationBody() {
     String body = notification.body;
     if (user != null) {
