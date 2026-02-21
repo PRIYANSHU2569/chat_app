@@ -60,12 +60,12 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
                           errorBuilder: (context, error, stackTrace) {
                             return Text(
                               otherUser.displayName.isNotEmpty
-                                  ? otherUser.displayName[0].toLowerCase()
+                                  ? otherUser.displayName[0].toUpperCase()
                                   : '?',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                               ),
                             );
                           },
@@ -73,7 +73,7 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
                       )
                     : Text(
                         otherUser.displayName.isNotEmpty
-                            ? otherUser.displayName[0].toLowerCase()
+                            ? otherUser.displayName[0].toUpperCase()
                             : '?',
                         style: TextStyle(
                           color: Colors.white,
@@ -91,9 +91,6 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
                       otherUser.displayName,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: otherUser.isOnline
-                            ? AppTheme.successColor
-                            : AppTheme.textSecondaryColor,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -348,7 +345,8 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
         title: Text('Edit Message'),
         content: TextField(
           controller: editController,
-          decoration: InputDecoration(hintText: 'Enter new message'),
+          decoration: InputDecoration(hintText: 'Enter new message'
+          ),
           maxLines: null,
         ),
         actions: [
