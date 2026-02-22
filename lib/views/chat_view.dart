@@ -18,11 +18,13 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
     chatId = Get.arguments?['chatId'] ?? '';
     if (!Get.isRegistered<ChatController>(tag: chatId)) {
-      Get.put<ChatController>(ChatController(), tag: chatId);
+      Get.put(ChatController(), tag: chatId);
     }
-    controller = Get.find<ChatController>(tag: chatId);
+    controller = Get.find(tag: chatId);
   }
 
   @override
@@ -184,7 +186,7 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-        controller.onChatResumed();
+        controller.onChatPaused();
         break;
       case AppLifecycleState.hidden:
         break;
