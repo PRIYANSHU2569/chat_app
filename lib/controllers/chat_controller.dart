@@ -28,7 +28,7 @@ class ChatController extends GetxController{
   final RxBool _isTyping = false.obs;
   final RxBool _isChatActive = false.obs;
 
-  List<MessageModel>get messages =>_messages;
+  RxList<MessageModel> get messages => _messages; // changed by chat gpt
   bool get isLoading => _isLoading.value;
   bool get isSending => _isSending.value;
   String get error => _error.value;
@@ -66,18 +66,42 @@ class ChatController extends GetxController{
       _markMessageAsRead();
     }
   }
+  // by chat gpt
+  String _buildChatId(String u1, String u2) {
+    final users = [u1, u2]..sort();
+    return '${users[0]}_${users[1]}';
+  }
 
-  void  _loadMessages(){
+  // void  _loadMessages(){
+  //   final currentUserId = _authController.user?.uid;
+  //   final otherUserId = _otherUser.value?.id;
+  //
+  //   if(currentUserId!=null && otherUserId !=null){
+  //     _messages.bindStream(
+  //       _firestoreService.getMessagesStream(currentUserId, otherUserId)
+  //     );
+  //
+  //     ever(_messages,(List<MessageModel>messageList){
+  //       if(_isChatActive.value){
+  //         _markUnReadMessagesAsRead(messageList);
+  //       }
+  //       _scrollToBottom();
+  //     });
+  //   }
+  // }
+  void _loadMessages() {
     final currentUserId = _authController.user?.uid;
     final otherUserId = _otherUser.value?.id;
 
-    if(currentUserId!=null && otherUserId !=null){
+    if (currentUserId != null && otherUserId != null) {
+      _chatId.value = _buildChatId(currentUserId, otherUserId);
+
       _messages.bindStream(
-        _firestoreService.getMessagesStream(currentUserId, otherUserId)
+        _firestoreService.getMessagesStream(currentUserId, otherUserId),
       );
 
-      ever(_messages,(List<MessageModel>messageList){
-        if(_isChatActive.value){
+      ever(_messages, (List<MessageModel> messageList) {
+        if (_isChatActive.value) {
           _markUnReadMessagesAsRead(messageList);
         }
         _scrollToBottom();
@@ -95,25 +119,66 @@ class ChatController extends GetxController{
       }
     });
   }
-  Future<void> _markUnReadMessagesAsRead(List<MessageModel>messageList)async{
+  // Future<void> _markUnReadMessagesAsRead(List<MessageModel>messageList)async{
+  //   final currentUserId = _authController.user?.uid;
+  //   if(currentUserId==null) return;
+  //
+  //   try{
+  //     final unreadMessages = messageList.where((message)=>
+  //         message.receiverId==currentUserId && !message.isRead && message.senderId!=currentUserId).toList();
+  //
+  //     for(var message in unreadMessages) {
+  //       await _firestoreService.markMessageAsRead(message.id);
+  //     }
+  //     if(unreadMessages.isNotEmpty && _chatId.value.isNotEmpty){
+  //       await _firestoreService.restoreUnreadCount(_chatId.value, currentUserId);
+  //     }
+  //     if(_chatId.value.isNotEmpty){
+  //       await _firestoreService.updateUserLastSeen(_chatId.value,currentUserId
+  //       );
+  //     }
+  //   }catch(e){
+  //     print(e);
+  //   }
+  // }
+  Future<void> _markUnReadMessagesAsRead(
+      List<MessageModel> messageList,
+      ) async {
     final currentUserId = _authController.user?.uid;
-    if(currentUserId==null) return;
+    if (currentUserId == null) return;
 
-    try{
-      final unreadMessages = messageList.where((message)=>
-          message.receiverId==currentUserId && !message.isRead && message.senderId!=currentUserId).toList();
+    try {
+      final unreadMessages = messageList.where(
+            (message) =>
+        message.receiverId == currentUserId &&
+            !message.isRead &&
+            message.senderId != currentUserId,
+      ).toList();
 
-      for(var message in unreadMessages) {
-        await _firestoreService.markMessageAsRead(message.id);
-      }
-      if(unreadMessages.isNotEmpty && _chatId.value.isNotEmpty){
-        await _firestoreService.restoreUnreadCount(_chatId.value, currentUserId);
-      }
-      if(_chatId.value.isNotEmpty){
-        await _firestoreService.updateUserLastSeen(_chatId.value,currentUserId
+      // ✅ FIX: pass chatId + messageId
+      for (var message in unreadMessages) {
+        await _firestoreService.markMessageAsRead(
+          _chatId.value, // ✅ ADDED
+          message.id,
         );
       }
-    }catch(e){
+
+      // ✅ Correct: reset unread count AFTER marking messages read
+      if (unreadMessages.isNotEmpty && _chatId.value.isNotEmpty) {
+        await _firestoreService.restoreUnreadCount(
+          _chatId.value,
+          currentUserId,
+        );
+      }
+
+      // ✅ Correct: update last seen
+      if (_chatId.value.isNotEmpty) {
+        await _firestoreService.updateUserLastSeen(
+          _chatId.value,
+          currentUserId,
+        );
+      }
+    } catch (e) {
       print(e);
     }
   }
@@ -160,43 +225,88 @@ class ChatController extends GetxController{
   void _onMessageChanged(){
     _isTyping.value = messageController.text.isNotEmpty;
   }
-  Future<void> sendMessage()async{
+  // Future<void> sendMessage()async{
+  //   final currentUserId = _authController.user?.uid;
+  //   final otherUserId = _otherUser.value?.id;
+  //   final content = messageController.text.trim();
+  //   if (content.isEmpty) return;
+  //
+  //
+  //   if(currentUserId ==null || otherUserId==null || content.isEmpty){
+  //     Get.snackbar('Error', 'You cannot send messages to this user');
+  //     return;
+  //   }
+  //   if(await _firestoreService.isUnfriended(currentUserId,otherUserId)){
+  //     Get.snackbar('Error',
+  //         'You cannot send messages to this user as you are not friends');
+  //     return;
+  //   }
+  //   messageController.clear();
+  //
+  //   try{
+  //     _isSending.value = true;
+  //
+  //     final message = MessageModel(
+  //       id: _uuid.v4(),
+  //       senderId: currentUserId,
+  //       receiverId: otherUserId,
+  //         content: content,
+  //         type: MessageType.text,
+  //         timestamp: DateTime.now(),
+  //     );
+  //     await _firestoreService.sendMessage(message);
+  //     _isTyping.value =false;
+  //     _scrollToBottom();
+  //   }catch(e){
+  //     print(e);
+  //     Get.snackbar('Error', 'You cannot send message');
+  //   }
+  //   finally{
+  //     _isSending.value = false;
+  //   }
+  // }
+  Future<void> sendMessage() async {
     final currentUserId = _authController.user?.uid;
     final otherUserId = _otherUser.value?.id;
     final content = messageController.text.trim();
-    messageController.clear();
 
-    if(currentUserId ==null || otherUserId==null || content.isEmpty){
-      Get.snackbar('Error', 'You cannot send messages to this user');
+    if (currentUserId == null || otherUserId == null || content.isEmpty) {
       return;
     }
-    if(await _firestoreService.isUnfriended(currentUserId,otherUserId)){
-      Get.snackbar('Error',
-          'You cannot send messages to this user as you are not friends');
-      return;
-    }
-    try{
-      _isSending.value = true;
 
-      final message = MessageModel(
-        id: _uuid.v4(),
-        senderId: currentUserId,
-        receiverId: otherUserId,
-          content: content,
-          type: MessageType.text,
-          timestamp: DateTime.now(),
+    if (await _firestoreService.isUnfriended(currentUserId, otherUserId)) {
+      Get.snackbar(
+        'Error',
+        'You cannot send messages to this user as you are not friends',
       );
-      await _firestoreService.sendMessage(message);
-      _isTyping.value =false;
-      _scrollToBottom();
-    }catch(e){
-      print(e);
-      Get.snackbar('Error', 'You cannot send message');
+      return;
     }
-    finally{
+
+    final message = MessageModel(
+      id: _uuid.v4(),
+      senderId: currentUserId,
+      receiverId: otherUserId,
+      content: content,
+      type: MessageType.text,
+      timestamp: DateTime.now(),
+    );
+
+    messageController.clear();
+    _isTyping.value = false;
+
+    try {
+      _isSending.value = true;
+      await _firestoreService.sendMessage(message);
+      _scrollToBottom();
+    } catch (e) {
+      // rollback if send fails
+      _messages.removeWhere((m) => m.id == message.id);
+      Get.snackbar('Error', 'Message failed to send');
+    } finally {
       _isSending.value = false;
     }
   }
+  // chat gpt tell remove this function
   Future<void> _markMessageAsRead()async{
     final currentUserId = _authController.user?.uid;
     if(currentUserId!=null && _chatId.value.isNotEmpty){
@@ -216,7 +326,10 @@ class ChatController extends GetxController{
   }
   Future<void> deleteMessage(MessageModel message)async{
     try{
-      await _firestoreService.deleteMessage(message.id);
+      _firestoreService.deleteMessage(
+        chatId: _chatId.value,
+        messageId: message.id,
+      );
       Get.snackbar('Success', 'Message Delete');
     }catch(e){
       Get.snackbar('Error', 'Failed to delete message');
@@ -225,7 +338,11 @@ class ChatController extends GetxController{
   }
   Future<void> editMessage(MessageModel message, String newContent)async{
     try{
-      await _firestoreService.editMessage(message.id, newContent);
+      _firestoreService.editMessage(
+        chatId: _chatId.value,
+        messageId: message.id,
+        newContent: newContent,
+      );
       Get.snackbar('Success', 'Message Edited');
     }catch(e){
       Get.snackbar('Error', 'Failed to edit message');
