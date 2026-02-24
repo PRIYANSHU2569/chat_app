@@ -43,7 +43,7 @@ class ChatModel {
         (key, value) => MapEntry(key, value?.millisecondsSinceEpoch),
       ),
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'updateAt': updatedAt.millisecondsSinceEpoch,
+      'updatedAt': updatedAt.millisecondsSinceEpoch,
 
     };
   }
@@ -102,7 +102,7 @@ class ChatModel {
     Map<String, DateTime?>? deletedAt,
     Map<String, DateTime?>? lastSeenBy,
     DateTime? createdAt,
-    DateTime? updateAt,
+    DateTime? updatedAt,
   }) {
     return ChatModel(
       id: id ?? this.id,
@@ -115,7 +115,7 @@ class ChatModel {
       deletedAt: deletedAt ?? this.deletedAt,
       lastSeenBy: lastSeenBy ?? this.lastSeenBy,
       createdAt: createdAt ?? this.createdAt,
-      updatedAt: updateAt ?? this.updatedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
