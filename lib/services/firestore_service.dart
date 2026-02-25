@@ -510,103 +510,221 @@ class FirestoreService {
   }
 
   // Messages collection
+  // Future<void> sendMessage(MessageModel message) async {
+  //   try {
+  //     await _firestore
+  //         .collection('messages')
+  //         .doc(message.id)
+  //         .set(message.toMap());
+  //
+  //     String chatId = await createOrGetChat(
+  //       message.senderId,
+  //       message.receiverId,
+  //     );
+  //     await updateChatLastMessage(chatId, message);
+  //     await updateUserLastSeen(chatId, message.senderId);
+  //
+  //     DocumentSnapshot chatDoc = await _firestore
+  //         .collection('chats')
+  //         .doc(chatId)
+  //         .get();
+  //
+  //     if (chatDoc.exists) {
+  //       ChatModel chat = ChatModel.fromMap(
+  //         chatDoc.data() as Map<String, dynamic>,
+  //       );
+  //
+  //       int currentUnread = chat.getUnreadCount(message.receiverId);
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Failed to send message: ${e.toString()}');
+  //   }
+  // }
+  //chat gpt
+  // =====================
+// SEND MESSAGE (FIXED)
+// =====================
   Future<void> sendMessage(MessageModel message) async {
     try {
-      await _firestore
-          .collection('message')
-          .doc(message.id)
-          .set(message.toMap());
-
+      // ✅ CHANGE 1: Create or get chat FIRST
       String chatId = await createOrGetChat(
         message.senderId,
         message.receiverId,
       );
+
+      // ✅ CHANGE 2: Save message INSIDE the chat
+      await _firestore
+          .collection('chats')
+          .doc(chatId)
+          .collection('messages') // ✅ FIXED LOCATION
+          .doc(message.id)
+          .set(message.toMap());
+
+      // ✅ unchanged
       await updateChatLastMessage(chatId, message);
       await updateUserLastSeen(chatId, message.senderId);
 
-      DocumentSnapshot chatDoc = await _firestore
-          .collection('chats')
-          .doc(chatId)
-          .get();
-
-      if (chatDoc.exists) {
-        ChatModel chat = ChatModel.fromMap(
-          chatDoc.data() as Map<String, dynamic>,
-        );
-
-        int currentUnread = chat.getUnreadCount(message.receiverId);
-      }
+      // ✅ OPTIONAL: update unread count
+      await _firestore.collection('chats').doc(chatId).update({
+        'unreadCount.${message.receiverId}':
+        FieldValue.increment(1),
+      });
     } catch (e) {
-      throw Exception('Failed to send message: ${e.toString()}');
+      throw Exception('Failed to send message: $e');
     }
   }
 
-  Stream<List<MessageModel>> getMessagesStream(String userId1, String userId2) {
+  // Stream<List<MessageModel>> getMessagesStream(String userId1, String userId2) {
+  //   return _firestore
+  //       .collection('messages')
+  //       .where('senderId', whereIn: [userId1, userId2])
+  //       .snapshots()
+  //       .asyncMap((snapshot) async {
+  //         List<String> participants = [userId1, userId2];
+  //         participants.sort();
+  //         String chatId = '${participants[0]}_${participants[1]}';
+  //
+  //         DocumentSnapshot chatDoc = await _firestore
+  //             .collection('chats')
+  //             .doc(chatId)
+  //             .get();
+  //
+  //         ChatModel? chat;
+  //         if (chatDoc.exists) {
+  //           chat = ChatModel.fromMap(chatDoc.data() as Map<String, dynamic>);
+  //         }
+  //         List<MessageModel> messages = [];
+  //         for (var doc in snapshot.docs) {
+  //           MessageModel message = MessageModel.fromMap(doc.data());
+  //           if ((message.senderId == userId1 &&
+  //                   message.receiverId == userId2) ||
+  //               (message.senderId == userId2 &&
+  //                   message.receiverId == userId1)) {
+  //             bool includeMessage = true;
+  //             if (chat != null) {
+  //               DateTime? currentUserDeletedAt = chat.getDeletedAt(userId1);
+  //
+  //               if (currentUserDeletedAt != null &&
+  //                   message.timestamp.isBefore(currentUserDeletedAt)) {
+  //                 includeMessage = false;
+  //               }
+  //             }
+  //             if (includeMessage) {
+  //               messages.add(message);
+  //             }
+  //           }
+  //         }
+  //         messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+  //         return messages;
+  //       });
+  // }
+  // ===============================
+// GET MESSAGES STREAM (FINAL)
+// ===============================
+  Stream<List<MessageModel>> getMessagesStream(
+      String userId1,
+      String userId2,
+      ) {
+    // 🔹 CHANGE 1: Generate chatId exactly the same everywhere
+    List<String> participants = [userId1, userId2];
+    participants.sort();
+    String chatId = '${participants[0]}_${participants[1]}';
+
+    // 🔹 CHANGE 2: Read messages from chats/{chatId}/messages
+    // ❌ NOT from root "messages" collection
     return _firestore
+        .collection('chats')
+        .doc(chatId)
         .collection('messages')
-        .where('senderId', whereIn: [userId1, userId2])
+        .orderBy('timestamp', descending: false) // 🔹 Firestore handles sorting
         .snapshots()
-        .asyncMap((snapshot) async {
-          List<String> participants = [userId1, userId2];
-          participants.sort();
-          String chatId = '${participants[0]}_${participants[1]}';
-
-          DocumentSnapshot chatDoc = await _firestore
-              .collection('chats')
-              .doc(chatId)
-              .get();
-
-          ChatModel? chat;
-          if (chatDoc.exists) {
-            chat = ChatModel.fromMap(chatDoc.data() as Map<String, dynamic>);
-          }
-          List<MessageModel> messages = [];
-          for (var doc in snapshot.docs) {
-            MessageModel message = MessageModel.fromMap(doc.data());
-            if ((message.senderId == userId1 &&
-                    message.receiverId == userId2) ||
-                (message.senderId == userId2 &&
-                    message.receiverId == userId1)) {
-              bool includeMessage = true;
-              if (chat != null) {
-                DateTime? currentUserDeletedAt = chat.getDeletedAt(userId1);
-
-                if (currentUserDeletedAt != null &&
-                    message.timestamp.isBefore(currentUserDeletedAt)) {
-                  includeMessage = false;
-                }
-              }
-              if (includeMessage) {
-                messages.add(message);
-              }
-            }
-          }
-          messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-          return messages;
-        });
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => MessageModel.fromMap(doc.data()))
+          .toList();
+    });
   }
 
-  Future<void> markMessageAsRead(String messageId) async {
+  // Future<void> markMessageAsRead(String messageId) async {
+  //   try {
+  //     await _firestore.collection('messages').doc(messageId).update({
+  //       'isRead': true,
+  //     });
+  //   } catch (e) {
+  //     throw Exception('Failed to mark message as read: ${e.toString()}');
+  //   }
+  // }
+  // by chat gpt
+  Future<void> markMessageAsRead(
+      String chatId,
+      String messageId,
+      ) async {
     try {
-      await _firestore.collection('messages').doc(messageId).update({
-        'isRead': true,
+      await _firestore
+          .collection('chats')          // ✅ correct
+          .doc(chatId)                  // ✅ correct
+          .collection('messages')       // ✅ correct
+          .doc(messageId)               // ✅ correct
+          .update({
+        'isRead': true,             // ✅ correct field
       });
     } catch (e) {
       throw Exception('Failed to mark message as read: ${e.toString()}');
     }
   }
 
-  Future<void> deleteMessage(String messageId) async {
+  // Future<void> deleteMessage(String messageId) async {
+  //   try {
+  //     await _firestore.collection('messages').doc(messageId).delete();
+  //   } catch (e) {
+  //     throw Exception('Failed to delete message: ${e.toString()}');
+  //   }
+  // }
+  // ===============================
+// DELETE MESSAGE (FIXED)
+// ===============================
+  Future<void> deleteMessage({
+    required String chatId,
+    required String messageId,
+  }) async {
     try {
-      await _firestore.collection('messages').doc(messageId).delete();
+      await _firestore
+          .collection('chats')              // ✅ CHANGED: go into chats
+          .doc(chatId)                      // ✅ CHANGED: specific chat
+          .collection('messages')           // ✅ CHANGED: messages subcollection
+          .doc(messageId)                   // same message id
+          .delete();
     } catch (e) {
       throw Exception('Failed to delete message: ${e.toString()}');
     }
   }
 
-  Future<void> editMessage(String messageId, String newContent) async {
+  // Future<void> editMessage(String messageId, String newContent) async {
+  //   try {
+  //     await _firestore.collection('messages').doc(messageId).update({
+  //       'content': newContent,
+  //       'isEdited': true,
+  //       'editedAt': DateTime.now().millisecondsSinceEpoch,
+  //     });
+  //   } catch (e) {
+  //     throw Exception('Failed to edit message: ${e.toString()}');
+  //   }
+  // }
+  // ===============================
+// EDIT MESSAGE (FIXED)
+// ===============================
+  Future<void> editMessage({
+    required String chatId,
+    required String messageId,
+    required String newContent,
+  }) async {
     try {
-      await _firestore.collection('messages').doc(messageId).update({
+      await _firestore
+          .collection('chats')              // ✅ CHANGED: go into chats
+          .doc(chatId)                      // ✅ CHANGED: specific chat
+          .collection('messages')           // ✅ CHANGED: messages subcollection
+          .doc(messageId)                   // same message id
+          .update({
         'content': newContent,
         'isEdited': true,
         'editedAt': DateTime.now().millisecondsSinceEpoch,
