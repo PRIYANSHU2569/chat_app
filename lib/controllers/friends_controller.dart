@@ -211,32 +211,66 @@ class FriendsController extends GetxController {
     }
   }
 
-  Future<void> startChat(UserModel friend)async{
-    try{
+  // Future<void> startChat(UserModel friend)async{
+  //   try{
+  //     _isLoading.value = true;
+  //     final currentUserId = _authController.user?.uid;
+  //     if(currentUserId != null){
+  //       Get.toNamed(
+  //         AppRoutes.chat,
+  //         arguments: {
+  //           'chatId':null,
+  //           'otherUser': friend,
+  //           'isNewChat': true,
+  //         },
+  //       );
+  //     }
+  //
+  //   }
+  //   catch(e){
+  //     Get.snackbar('Error', 'Failed to start chat',
+  //       backgroundColor: Colors.redAccent.withOpacity(0.1),
+  //       colorText: Colors.redAccent,
+  //       duration: Duration(seconds: 4),
+  //
+  //     );
+  //     print(e.toString());
+  //   }
+  //   finally{
+  //     _isLoading.value = false;
+  //   }
+  // }
+  Future<void> startChat(UserModel friend) async {
+    try {
       _isLoading.value = true;
-      final currentUserId = _authController.user?.uid;
-      if(currentUserId != null){
-        Get.toNamed(
-          AppRoutes.chat,
-          arguments: {
-            'chatId':null,
-            'otherUser': friend,
-            'isNewChat': true,
-          },
-        );
-      }
 
-    }
-    catch(e){
-      Get.snackbar('Error', 'Failed to start chat',
+      final currentUserId = _authController.user?.uid;
+      if (currentUserId == null) return;
+
+      /// ✅ Always get or create chatId first
+      final chatId = await _firestoreService.createOrGetChat(
+        currentUserId,
+        friend.id,
+      );
+
+      /// ✅ Navigate with VALID chatId + otherUser
+      Get.toNamed(
+        AppRoutes.chat,
+        arguments: {
+          'chatId': chatId,     // 🔥 MUST NOT BE NULL
+          'otherUser': friend,  // 🔥 REQUIRED
+        },
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to start chat',
         backgroundColor: Colors.redAccent.withOpacity(0.1),
         colorText: Colors.redAccent,
-        duration: Duration(seconds: 4),
-
+        duration: const Duration(seconds: 4),
       );
-      print(e.toString());
-    }
-    finally{
+      debugPrint(e.toString());
+    } finally {
       _isLoading.value = false;
     }
   }
